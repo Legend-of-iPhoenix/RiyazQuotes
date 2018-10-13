@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Riyaz Quotes</title>
+  <script type="text/javascript" async="" src="https://www.google-analytics.com/analytics.js"></script>
+  <script async="" src="https://www.googletagmanager.com/gtag/js?id=UA-109579764-3"></script>
+  <script src="https://www.gstatic.com/firebasejs/5.5.4/firebase.js"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    // Initialize Firebase
+    var config = {
+      apiKey: "AIzaSyCOYFr9dA9-i6n2OiNDd3DkHJ7Q-zIaG7w",
+      authDomain: "riyazquotes.firebaseapp.com",
+      databaseURL: "https://riyazquotes.firebaseio.com",
+      projectId: "riyazquotes",
+      storageBucket: "riyazquotes.appspot.com",
+      messagingSenderId: "521493775309"
+    };
+    firebase.initializeApp(config);
+  </script>
+  <script>
+    var time = 0;
+    var quote = 0;
+    var quotes = {};
+    var quotesLoaded = false;
+    var ready = false;
+    firebase.database().ref("quotes").once('value').then(function (snapshot) {
+      quotes = snapshot.val();
+      quotesLoaded = true;
+      try {
+        firebase.database().ref('/curQuote/').set({
+          v: Math.floor(1 + Math.random() * (quotes.length - 1)),
+          t: firebase.database.ServerValue.TIMESTAMP
+        });
+      } catch (error) {
+        //ignore
+      }
+    });
+    firebase.database().ref("curQuote").on('value', function (snapshot) {
+      var data = snapshot.val();
+      time = data.t;
+      quote = data.v;
+      ready = true;
+    });
+    window.onload = function () {
+      setInterval(function () {
+        if (ready) {
+          document.getElementById("time").innerText = parseTime(((new Date).getTime()) - time)
+          document.getElementById("quote").innerText = quotes[quote]
+        }
+      }, 100);
+    }
+
+    function parseTime(ms) {
+      var fmt = (n, u) => n == 1 ? n + ' ' + u : n + ' ' + u + 's';
+      var f = Math.floor
+      var s = f(ms / 1000) % 60;
+      var m = f(ms / 60000) % 60;
+      var h = f(ms / 360000) % 24;
+      var d = f(ms / 86400000);
+      var arr = [fmt(d, 'day') + ', ', fmt(h, 'hour') + ', ', fmt(m, 'minute') + ' and ', fmt(s, 'second')]
+      if (d)
+        return arr.join('');
+      arr.shift();
+      if (h)
+        return arr.join('');
+      arr.shift();
+      if (m)
+        return arr.join('');
+      arr.shift();
+      return arr.join('');
+    }
+  </script>
+  <style>
+    * {
+      font-family: sans-serif;
+    }
+
+    #about {
+      position: fixed;
+      bottom: 0%;
+    }
+
+    a {
+      text-decoration: none;
+      color: #888;
+    }
+
+    p {
+      color: #333;
+    }
+  </style>
+</head>
+
+<body>
+  <h1> Riyaz quote of the past <span id="time">0s</span>:</h1>
+  <p id="quote"></p>
+  <p id="about">Site by <a href="https://legend-of-iphoenix.github.io">_iPhoenix_</a>, featuring gently censored quotes from Riyaz.</p>
+</body>
+
+</html>
