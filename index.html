@@ -21,33 +21,32 @@
   </script>
   <script>
     var time = 0;
-    var quote = 0;
-    var quotes = {};
-    var quotesLoaded = false;
+    var quote = "";
     var ready = false;
-    firebase.database().ref("quotes").once('value').then(function (snapshot) {
-      quotes = snapshot.val();
-      quotesLoaded = true;
-      try {
-        firebase.database().ref('/curQuote/').set({
-          v: Math.floor(1 + Math.random() * (quotes.length - 1)),
-          t: firebase.database.ServerValue.TIMESTAMP
-        });
-      } catch (error) {
-        //ignore
-      }
+    firebase.database().ref("numQuotes").once('value').then(function (snapshot) {
+			try {
+	      firebase.database().ref('curQuote').set({
+	        v: Math.floor(1 + Math.random() * (snapshot.val() - 1)),
+	        t: firebase.database.ServerValue.TIMESTAMP
+	      });
+	    } catch (error) {
+	      //ignore
+	    }
     });
     firebase.database().ref("curQuote").on('value', function (snapshot) {
       var data = snapshot.val();
       time = data.t;
-      quote = data.v;
-      ready = true;
+      ready = false;
+      firebase.database().ref("quotes/"+data.v).once('value').then(function (snapshot) {
+	      quote = snapshot.val();
+	      ready = true;
+	    });
     });
     window.onload = function () {
       setInterval(function () {
         if (ready) {
           document.getElementById("time").innerText = parseTime(((new Date).getTime()) - time)
-          document.getElementById("quote").innerText = quotes[quote]
+          document.getElementById("quote").innerText = quote
         }
       }, 100);
     }
