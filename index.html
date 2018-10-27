@@ -23,30 +23,30 @@
     var time = 0;
     var quote = "";
     var ready = false;
-    firebase.database().ref("numQuotes").once('value').then(function (snapshot) {
-			try {
-	      firebase.database().ref('curQuote').set({
-	        v: Math.floor(1 + Math.random() * (snapshot.val() - 1)),
-	        t: firebase.database.ServerValue.TIMESTAMP
-	      });
-	    } catch (error) {
-	      //ignore
-	    }
+    firebase.database().ref("numQuotes").once('value').then(function(snapshot) {
+      try {
+        firebase.database().ref('curQuote').set({
+          v: Math.floor(1 + Math.random() * (snapshot.val() - 1)),
+          t: firebase.database.ServerValue.TIMESTAMP
+        });
+      } catch (error) {
+        //ignore
+      }
     });
-    firebase.database().ref("curQuote").on('value', function (snapshot) {
+    firebase.database().ref("curQuote").on('value', function(snapshot) {
       var data = snapshot.val();
       time = data.t;
       ready = false;
-      firebase.database().ref("quotes/"+data.v).once('value').then(function (snapshot) {
-	      quote = snapshot.val();
-	      ready = true;
-	    });
+      firebase.database().ref("quotes/" + data.v).once('value').then(function(snapshot) {
+        quote = snapshot.val();
+        ready = true;
+      });
     });
-    window.onload = function () {
-      setInterval(function () {
+    window.onload = function() {
+      setInterval(function() {
         if (ready) {
           document.getElementById("time").innerText = parseTime(((new Date).getTime()) - time)
-          document.getElementById("quote").innerText = quote
+          document.getElementById("quote").innerText = quote;
         }
       }, 100);
     }
