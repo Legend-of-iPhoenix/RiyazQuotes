@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Admin Page - RiyazQuotes</title>
+  <script type="text/javascript" async="" src="https://www.google-analytics.com/analytics.js"></script>
+  <script async="" src="https://www.googletagmanager.com/gtag/js?id=UA-109579764-3"></script>
+  <script src="https://www.gstatic.com/firebasejs/5.5.4/firebase.js"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    // Initialize Firebase
+    var config = {
+      apiKey: "AIzaSyCOYFr9dA9-i6n2OiNDd3DkHJ7Q-zIaG7w",
+      authDomain: "riyazquotes.firebaseapp.com",
+      databaseURL: "https://riyazquotes.firebaseio.com",
+      projectId: "riyazquotes",
+      storageBucket: "riyazquotes.appspot.com",
+      messagingSenderId: "521493775309"
+    };
+    firebase.initializeApp(config);
+  </script>
+  <script src="js/admin.js"></script>
+  <style>
+    * {
+      font-family: sans-serif;
+      box-sizing: border-box;
+    }
+
+    #about {
+      position: fixed;
+      bottom: 0%;
+    }
+
+    a {
+      text-decoration: none;
+      color: #888;
+    }
+
+    p {
+      color: #333;
+    }
+
+    #errors {
+      color: #800;
+    }
+
+    #quotes {
+      padding-left: 5%;
+    }
+
+    #quotes input[type="text"] {
+      font-family: monospace;
+      width: 93%;
+    }
+
+    #edit {
+      display: none;
+    }
+
+    .deleteQuote {
+      color: #800;
+      width: 2%;
+      visibility: hidden;
+    }
+
+    .deleteQuote.visible {
+      visibility: visible;
+    }
+  </style>
+</head>
+<body>
+  <div id="login">
+    <h1> Please log in to access the admin console. </h1>
+    <div>
+      <p id="errors"></p>
+      <label for="email">Email: </label>
+      <input name="email" type="input" placeholder="email" id="email">
+      <br />
+      <label for="email">Password: </label>
+      <input name="password" type="password" placeholder="password" id="password">
+      <br />
+      <button onclick="login()"> Submit </button>
+    </div>
+  </div>
+  <div id="edit">
+    <ul id="quotes">
+      
+    </ul>
+    <p> Add new quote: </p>
+    <input type="text" id="new">
+    <button onclick="addQuote()">Add</button>
+    <p> You have <span id="changes">0</span> unsaved change<span id="s">s</span> </p>
+    <button id="save" onclick="save()"> Save </button>
+    <button id="logout" onclick="logout()"> Logout </button>
+  </div>
+</body>
+</html>
