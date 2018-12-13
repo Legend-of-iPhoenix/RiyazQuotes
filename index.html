@@ -46,7 +46,7 @@
       setInterval(function() {
         if (ready) {
           document.getElementById("time").innerText = parseTime(((new Date).getTime()) - time)
-          document.getElementById("quote").innerText = quote.replace(/\\\\n/g, '\n');
+          document.getElementById("quote").innerHTML = quote.replace(/\\n/g, '\n');
         }
       }, 100);
     }
